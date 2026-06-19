@@ -1,9 +1,11 @@
-This is a project on recursion in C that aims to meet the following learning requirements:
+ALU Low level Programming - C
 
-	1. What is recursion
+	1. Functions Nested Loops
 
-	2. How to implement recursion
+	2. Hello World 
 	
-	3. In what situations you should implement recursion
+	3. Pointers Arrays and Strings
 
-	4. In what situations you shouldn't implement recursion
+	4. Recursion
+
+	5. Variable, If Else & While
