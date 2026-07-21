@@ -11,14 +11,14 @@ int open_to(char *file_to);
 void copy_content(int fd_from, int fd_to, char *file_from, char *file_to);
 
 /**
- * close_fd - closes a file descriptor, exits with 100 on failure
+ * close_fd - closes a file descriptor
  * @fd: the file descriptor to close
  */
 void close_fd(int fd)
 {
 	if (close(fd) == -1)
 	{
-		dprintf(2, "Error: Can't close fd %d\n", fd);
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd);
 		exit(100);
 	}
 }
@@ -36,14 +36,16 @@ int open_from(char *file_from)
 	fd_from = open(file_from, O_RDONLY);
 	if (fd_from == -1)
 	{
-		dprintf(2, "Error: Can't read from file %s\n", file_from);
+		dprintf(STDERR_FILENO,
+			"Error: Can't read from file %s\n", file_from);
 		exit(98);
 	}
+
 	return (fd_from);
 }
 
 /**
- * open_to - opens (creates/truncates) the destination file for writing
+ * open_to - opens or creates the destination file
  * @file_to: the name of the destination file
  *
  * Return: the file descriptor
@@ -55,18 +57,20 @@ int open_to(char *file_to)
 	fd_to = open(file_to, O_WRONLY | O_CREAT | O_TRUNC, 0664);
 	if (fd_to == -1)
 	{
-		dprintf(2, "Error: Can't write to %s\n", file_to);
+		dprintf(STDERR_FILENO,
+			"Error: Can't write to %s\n", file_to);
 		exit(99);
 	}
+
 	return (fd_to);
 }
 
 /**
- * copy_content - copies content from one fd to another, 1024 bytes at a time
+ * copy_content - copies content from source to destination
  * @fd_from: source file descriptor
  * @fd_to: destination file descriptor
- * @file_from: name of the source file (for error messages)
- * @file_to: name of the destination file (for error messages)
+ * @file_from: source file name
+ * @file_to: destination file name
  */
 void copy_content(int fd_from, int fd_to, char *file_from, char *file_to)
 {
@@ -76,15 +80,19 @@ void copy_content(int fd_from, int fd_to, char *file_from, char *file_to)
 	while ((r = read(fd_from, buf, BUF_SIZE)) > 0)
 	{
 		w = write(fd_to, buf, r);
+
 		if (w == -1 || w != r)
 		{
-			dprintf(2, "Error: Can't write to %s\n", file_to);
+			dprintf(STDERR_FILENO,
+				"Error: Can't write to %s\n", file_to);
 			exit(99);
 		}
 	}
+
 	if (r == -1)
 	{
-		dprintf(2, "Error: Can't read from file %s\n", file_from);
+		dprintf(STDERR_FILENO,
+			"Error: Can't read from file %s\n", file_from);
 		exit(98);
 	}
 }
@@ -94,7 +102,7 @@ void copy_content(int fd_from, int fd_to, char *file_from, char *file_to)
  * @ac: argument count
  * @av: argument vector
  *
- * Return: 0 on success, exits with 97, 98, 99 or 100 on failure
+ * Return: 0 on success
  */
 int main(int ac, char **av)
 {
@@ -102,7 +110,7 @@ int main(int ac, char **av)
 
 	if (ac != 3)
 	{
-		dprintf(2, "Usage: cp file_from file_to\n");
+		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
 		exit(97);
 	}
 
